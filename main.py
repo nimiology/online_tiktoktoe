@@ -8,7 +8,10 @@ def insertletter(letter,pos):
 
 def IsSpaceFree(pos):
     return board[pos] == ' '
-
+def SORC():
+    RUN = True
+    while RUN:
+        INPUT = input('Do you want to connect someone or be a server?[C/S]')
 def PrintBoard(board):
     print('   |   |')
     print(f' {board[1]} | {board[2]} | {board[3]}')
@@ -50,6 +53,7 @@ def IsBoardFull(Board):
 
 def main():
     print("Welcome to Tic Tac Toe !")
+    CONNECTION  =  SORC()
     while not (IsBoardFull(board)):
         if not (IsWinner(board,'X')):
             PlayerMove()
