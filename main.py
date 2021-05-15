@@ -57,6 +57,25 @@ def IsBoardFull(Board):
     else:
         return True
 
+
+def game():
+    while not (IsBoardFull(board)):
+        if not (IsWinner(board, 'X')):
+            PlayerMove()
+            PrintBoard(board)
+        else:
+            print("X\'s won!")
+            break
+
+        if not (IsWinner(board, 'O')):
+            pass
+        else:
+            print("O\'s won!")
+            break
+    if IsBoardFull(board):
+        print("Tie Game!")
+
+
 def main():
     print("Welcome to Tic Tac Toe !")
     CONNECTION  =  SORC()
@@ -74,6 +93,7 @@ def main():
         while True:
             conn ,addr = server.accept()
             print(f'[NEW CONNECTION] {addr} conneted')
+            game()
 
 
 
@@ -82,20 +102,5 @@ def main():
     elif CONNECTION == 'C' or CONNECTION == 'C':
         pass
 
-    while not (IsBoardFull(board)):
-        if not (IsWinner(board,'X')):
-            PlayerMove()
-            PrintBoard(board)
-        else:
-            print("X\'s won!")
-            break
-
-        if not (IsWinner(board, 'O')):
-            pass
-        else:
-            print("O\'s won!")
-            break
-    if IsBoardFull(board):
-        print("Tie Game!")
 
 main()
