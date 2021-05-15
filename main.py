@@ -3,20 +3,21 @@ import socket
 
 board = [' ' for x in range(10)]
 
+FORMAT = 'utf-8'
+SERVER = input('What is the server IP?')
+PORT = int(input('What is the server PORT?'))
+NAME = input("What should I call you?")
+ADDR = (SERVER, PORT)
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client.connect(ADDR)
+print('[CONNECTION] connected successfully')
+
 
 def insertletter(letter,pos):
     board[pos] = letter
 
 def IsSpaceFree(pos):
     return board[pos] == ' '
-def SORC():
-    run = True
-    while run:
-        INPUT = input('Do you want to connect someone or be a server?[C/S]')
-        if (INPUT == 'C'or INPUT=='c' or INPUT =='S' or INPUT == 's'):
-            return INPUT
-        else:
-            pass
             
 def PrintBoard(board):
     print('   |   |')
@@ -44,6 +45,7 @@ def PlayerMove():
                 if IsSpaceFree(move):
                     run = False
                     insertletter('X', move)
+                    return move
                 else:
                     print("Sorry, this space is occupied!")
             else:
@@ -57,50 +59,40 @@ def IsBoardFull(Board):
     else:
         return True
 
+def send(msg):
+    message = msg.encode(FORMAT)
+    msg_length = len(message)
+    send_length = str(msg_length).encode(FORMAT)
+    send_length += b' '*(2048 - len(send_length))
+    client.send(send_length)
+    client.send(message)
 
-def game():
-    while not (IsBoardFull(board)):
-        if not (IsWinner(board, 'X')):
-            PlayerMove()
-            PrintBoard(board)
-        else:
-            print("X\'s won!")
-            break
-
-        if not (IsWinner(board, 'O')):
-            pass
-        else:
-            print("O\'s won!")
-            break
-    if IsBoardFull(board):
-        print("Tie Game!")
+def MYTURN():
+    if not (IsWinner(board, 'O')):
+        move = PlayerMove()
+        send(str(move))
+        PrintBoard(board)
+    else:
+        print("O\'s won!")
 
 
 def main():
     print("Welcome to Tic Tac Toe !")
-    CONNECTION  =  SORC()
-    if CONNECTION == 'S' or CONNECTION == 's':
-        print('[STARTING] server is starting....')
-        PORT = 2412
-        SERVER = socket.gethostbyname(socket.gethostname())
-        ADDR = (SERVER, PORT)
-        FORMAT = 'utf-8'
-        server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server.bind(ADDR)
-        server.listen()
-        print(f'[LISTENING] Sever is listening on {SERVER}')
-        NAME = input("What should I call you?")
+    while not (IsBoardFull(board)):
         while True:
-            conn ,addr = server.accept()
-            print(f'[NEW CONNECTION] {addr} conneted')
-            game()
+            msg = client.recv(2048).decode(FORMAT)
+            if msg == 'YOURTURN':
+                MYTURN()
+            else:
+                if not (IsWinner(board, 'X')):
+                    insertletter('O',int(msg))
+                else:
+                    print("X\'s won!")
 
 
+    if IsBoardFull(board):
+        print("Tie Game!")
 
-
-
-    elif CONNECTION == 'C' or CONNECTION == 'C':
-        pass
 
 
 main()
