@@ -31,6 +31,7 @@ def PrintBoard(board):
     print('   |   |')
     print(f' {board[7]} | {board[8]} | {board[9]}')
     print('   |   |')
+    print()
 
 def IsWinner(board, letter):
     return (board[1] == letter and board[2] == letter and board[1] == letter) or (board[4] == letter and board[5] == letter and board[6] == letter) or (board[7] == letter and board[8] == letter and board[9] == letter) or (board[1] == letter and board[4] == letter and board[7] == letter) or (board[2] == letter and board[5] == letter and board[8] == letter) or (board[3] == letter and board[6] == letter and board[9] == letter) or (board[1] == letter and board[5] == letter and board[9] == letter) or (board[3] == letter and board[5] == letter and board[7] == letter)
@@ -82,9 +83,14 @@ def main():
         while True:
             msg = client.recv(2048).decode(FORMAT)
             if msg == 'YOURTURN':
-                MYTURN()
+                if not (IsWinner(board, 'O')):
+                    PrintBoard(board)
+                    MYTURN()
+                else:
+                    print("O\'s won!")
             else:
                 if not (IsWinner(board, 'X')):
+                    PrintBoard(board)
                     insertletter('O',int(msg))
                 else:
                     print("X\'s won!")
