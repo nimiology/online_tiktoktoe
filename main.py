@@ -3,15 +3,21 @@ import socket
 
 board = [' ' for x in range(10)]
 
+
 def insertletter(letter,pos):
     board[pos] = letter
 
 def IsSpaceFree(pos):
     return board[pos] == ' '
 def SORC():
-    RUN = True
-    while RUN:
+    run = True
+    while run:
         INPUT = input('Do you want to connect someone or be a server?[C/S]')
+        if (INPUT == 'C'or INPUT=='c' or INPUT =='S' or INPUT == 's'):
+            return INPUT
+        else:
+            pass
+            
 def PrintBoard(board):
     print('   |   |')
     print(f' {board[1]} | {board[2]} | {board[3]}')
@@ -47,13 +53,35 @@ def PlayerMove():
 
 def IsBoardFull(Board):
     if Board.count(" ") > 1:
-        return True
-    else:
         return False
+    else:
+        return True
 
 def main():
     print("Welcome to Tic Tac Toe !")
     CONNECTION  =  SORC()
+    if CONNECTION == 'S' or CONNECTION == 's':
+        print('[STARTING] server is starting....')
+        PORT = 2412
+        SERVER = socket.gethostbyname(socket.gethostname())
+        ADDR = (SERVER, PORT)
+        FORMAT = 'utf-8'
+        server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server.bind(ADDR)
+        server.listen()
+        print(f'[LISTENING] Sever is listening on {SERVER}')
+        NAME = input("What should I call you?")
+        while True:
+            conn ,addr = server.accept()
+            print(f'[NEW CONNECTION] {addr} conneted')
+
+
+
+
+
+    elif CONNECTION == 'C' or CONNECTION == 'C':
+        pass
+
     while not (IsBoardFull(board)):
         if not (IsWinner(board,'X')):
             PlayerMove()
@@ -70,3 +98,4 @@ def main():
     if IsBoardFull(board):
         print("Tie Game!")
 
+main()
